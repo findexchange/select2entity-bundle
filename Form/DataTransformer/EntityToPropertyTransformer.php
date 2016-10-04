@@ -65,6 +65,14 @@ class EntityToPropertyTransformer implements DataTransformerInterface
             return null;
         }
 
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        if (!is_numeric($value)) {
+            $newEntity = new $this->className();
+            $accessor->setValue($newEntity, $this->textProperty, $value);
+            return $newEntity;
+        }
+
         $repo = $this->em->getRepository($this->className);
 
         return $repo->find($value);

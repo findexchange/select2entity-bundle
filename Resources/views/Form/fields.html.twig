@@ -6,6 +6,7 @@
         'data-min-length':minimum_input_length,
         'data-page-limit':page_limit,
         'data-data-type':data_type,
+        'data-allow-new':allow_new,
         'data-placeholder':placeholder
     }) %}
 
@@ -16,7 +17,8 @@
     It seems to work more smoothly if we put the initial value into data-value rather than the value attribute.
     But ... value needs to be non-blank for initSelection in the js to fire.
     We need to remove this value in EntitiesToPropertyTransformer #}
-    {% set value = 'x' %}
+
+    {#{% set value = 'x' %}#}
 
     {% set type = type|default('hidden') %}
     {{ block('form_widget_simple') }}

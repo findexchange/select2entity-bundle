@@ -15,11 +15,29 @@ $(document).ready(function () {
         data: function (term, page) {
           return {
             q: term,
-            page_limit: $(this).data('page-limit')
+            page_limit: $(this).data('page-limit'),
+            form: $(this).closest('form').serialize()
           };
         },
         results: function (data, page) {
           return {results: data};
+        }
+      },
+
+      createSearchChoice: function (term, data) {
+        if (!this.opts.element.data('allow-new')) {
+          return null;
+        }
+
+        if ($(data).filter(
+                function () {
+                  return this.text.search(term) !== -1;
+                }
+            ).length === 0) {
+          return {
+            id: term,
+            text: term
+          };
         }
       },
 

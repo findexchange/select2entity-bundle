@@ -21,6 +21,8 @@ use Tetranz\Select2EntityBundle\Form\DataTransformer\EntityToPropertyTransformer
  */
 class Select2EntityType extends AbstractType
 {
+    const DEFAULT_ROUTE_NAME = 'tetranz_select2entity_autocomplete';
+
     protected $em;
     protected $router;
     protected $pageLimit;
@@ -50,6 +52,11 @@ class Select2EntityType extends AbstractType
     {
         parent::finishView($view, $form, $options);
 
+        if ($options['remote_route'] === self::DEFAULT_ROUTE_NAME) {
+            $options['remote_params']['class'] = $options['class'];
+            $options['remote_params']['text_property'] = $options['text_property'];
+        }
+
         // make variables available to the view
         $view->vars['remote_path'] = $options['remote_path']
                 ?: $this->router->generate($options['remote_route'], $options['remote_params']);
@@ -66,7 +73,7 @@ class Select2EntityType extends AbstractType
         $resolver->setDefaults(array(
                 'class' => null,
                 'remote_path' => null,
-                'remote_route' => null,
+                'remote_route' => self::DEFAULT_ROUTE_NAME,
                 'remote_params' => array(),
                 'multiple' => false,
                 'compound' => false,

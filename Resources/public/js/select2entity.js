@@ -16,7 +16,7 @@ $(document).ready(function () {
           return {
             q: term,
             page_limit: $(this).data('page-limit'),
-            form: $(this).closest('form').serialize()
+            form: $(this).closest('form').serializeArray()
           };
         },
         results: function (data, page) {

@@ -30,6 +30,7 @@ class EntitiesToPropertyTransformer implements DataTransformerInterface
      * Transform initial entities as json with id and text
      *
      * @param mixed $entities
+     *
      * @return string
      */
     public function transform($entities)
@@ -39,20 +40,20 @@ class EntitiesToPropertyTransformer implements DataTransformerInterface
         }
 
         // return an array of initial values as html encoded json
-        $data = array();
+        $data = [];
 
         $accessor = PropertyAccess::createPropertyAccessor();
 
-        foreach($entities as $entity) {
+        foreach ($entities as $entity) {
 
             $text = is_null($this->textProperty)
-                    ? (string) $entity
-                    : $accessor->getValue($entity, $this->textProperty);
+                ? (string)$entity
+                : $accessor->getValue($entity, $this->textProperty);
 
-            $data[] = array(
+            $data[] = [
                 'id' => $accessor->getValue($entity, 'id'),
                 'text' => $text
-            );
+            ];
         }
 
         return htmlspecialchars(json_encode($data));
@@ -62,6 +63,7 @@ class EntitiesToPropertyTransformer implements DataTransformerInterface
      * Transform csv list of ids to a collection of entities
      *
      * @param string $values as a CSV list
+     *
      * @return array|ArrayCollection|mixed
      */
     public function reverseTransform($values)
@@ -75,15 +77,30 @@ class EntitiesToPropertyTransformer implements DataTransformerInterface
 
         $ids = explode(',', $values);
 
+        $strings = array_filter($ids, function ($value) {
+            return !is_numeric($value);
+        });
+
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        $newEntities = [];
+        foreach ($strings as $string) {
+            $newEntity = new $this->className();
+            $accessor->setValue($newEntity, $this->textProperty, $string);
+            $newEntities[] = $newEntity;
+        }
+
+        $ids = array_diff($ids, $strings);
+
         // get multiple entities with one query
         $entities = $this->em->createQueryBuilder()
-                ->select('entity')
-                ->from($this->className, 'entity')
-                ->where('entity.id IN (:ids)')
-                ->setParameter('ids', $ids)
-                ->getQuery()
-                ->getResult();
+            ->select('entity')
+            ->from($this->className, 'entity')
+            ->where('entity.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
 
-        return $entities;
+        return array_merge($entities, $newEntities);
     }
 }

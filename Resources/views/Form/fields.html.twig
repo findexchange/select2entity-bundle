@@ -18,7 +18,7 @@
     But ... value needs to be non-blank for initSelection in the js to fire.
     We need to remove this value in EntitiesToPropertyTransformer #}
 
-    {#{% set value = 'x' %}#}
+    {% set value = 'x' %}
 
     {% set type = type|default('hidden') %}
     {{ block('form_widget_simple') }}

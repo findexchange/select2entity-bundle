@@ -74,6 +74,10 @@ $(document).ready(function () {
     if (!multiple) {
       // Sets the data as dirty. Wthout this, the data coms through as blank if a form is submitted but the field is not changed
       $(this).select2('data', initValue);
+    } else {
+      var str = $(this).attr('value');
+      str = str.substring(2);
+      $(this).attr('value', str);
     }
 
   });

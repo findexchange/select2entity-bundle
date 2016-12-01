@@ -1,6 +1,5 @@
-$(document).ready(function () {
-
-  $('.select2entity').each(function(index) {
+$.fn.select2entity = function(options) {
+  this.each(function(index) {
     var initValue;
     var multiple = $(this).data('multiple');
 
@@ -81,23 +80,27 @@ $(document).ready(function () {
     }
 
   });
+  
+  return this;
+};
 
-  // simple htmldecode. Basic idea from underscore.js
-  function htmlDecode(string)
-  {
+// simple htmldecode. Basic idea from underscore.js
+function htmlDecode(string) {
     var regex = new RegExp('(&amp;|&lt;|&gt;|&quot;|&#x27;)', 'g');
 
     var map = {
-      '&amp;': '&',
-      '&lt;': '<',
-      '&gt;': '>',
-      '&quot;': '"',
-      '&#x27;': "'"
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&quot;': '"',
+        '&#x27;': "'"
     };
 
     return ('' + string).replace(regex, function(match) {
-      return map[match];
+        return map[match];
     });
-  }
+}
 
+$(document).ready(function() {
+    $('.select2entity').select2entity();
 });
